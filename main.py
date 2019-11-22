@@ -1,9 +1,8 @@
-import os
-import getValue
-import jsonProcess as jp
 import test
-
+import analysis
 
 FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\push-up'
 
-test.get_infos(FILEPATH)
+times = analysis.pushUpTimesCount(FILEPATH)
+print(times)
+test.getPushUpInfos(FILEPATH)
