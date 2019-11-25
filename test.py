@@ -6,7 +6,7 @@ import jsonProcess as jp
 import matplotlib.pyplot as plt
 
 
-def getPushUpInfos(folder_path, is_print, region):
+def getPushUpInfos(folder_path, is_print, region=[]):
     '''Open folder and process .json into a dict
        input: The file path
        ouput: The analysis of some infos of the whole process
@@ -132,5 +132,97 @@ def getPushUpInfos(folder_path, is_print, region):
     # ax4.vlines(actu, 0, 180, colors='r')
     ax4.set_title('hip_angle')
 
+    plt.show()
+    # plt.savefig(r'E:\University\科研创新\雏燕计划-体测\push-up-side.png')
+
+
+def getPullUpInfos(folder_path, is_print, region=[]):
+    '''Open folder and process .json into a dict
+       input: The file path
+       ouput: The analysis of some infos of the whole process
+    '''
+    files = os.listdir(folder_path)
+    max_r_elbow_angle = max_l_elbow_angle = 0
+    min_r_elbow_angle = min_l_elbow_angle = 200
+    r_elb_ang = []
+    l_elb_ang = []
+    neck_horizontalbar_distance = []
+    eye_wrist_distance_list = []
+    cnt1 = cnt2 = 0
+    total_r_elbow_angle = total_l_elbow_angle = 0
+
+    for i, file in enumerate(files):
+        coor = jp.getJson(folder_path + '\\' + file)
+        if not coor:
+            continue
+        cnt = i
+        r_elbow_angle = getValue.getElbowAngle(coor, 'R')
+        l_elbow_angle = getValue.getElbowAngle(coor, 'L')
+        head_wrist_distance = getValue.getHeadDistance(coor)
+        eye_wrist_distance = getValue.getEyeDistance(coor)
+
+        if r_elbow_angle:
+            r_elb_ang.append(r_elbow_angle)
+            total_r_elbow_angle += r_elbow_angle
+            cnt1 += 1
+            max_r_elbow_angle = max(max_r_elbow_angle, r_elbow_angle)
+            min_r_elbow_angle = min(min_r_elbow_angle, r_elbow_angle)
+        else:
+            r_elb_ang.append(0)
+
+        if l_elbow_angle:
+            l_elb_ang.append(l_elbow_angle)
+            total_l_elbow_angle += l_elbow_angle
+            cnt2 += 1
+            max_l_elbow_angle = max(max_l_elbow_angle, l_elbow_angle)
+            min_l_elbow_angle = min(min_l_elbow_angle, l_elbow_angle)
+        else:
+            l_elb_ang.append(0)
+
+        if head_wrist_distance:
+            neck_horizontalbar_distance.append(head_wrist_distance)
+        else:
+            neck_horizontalbar_distance.append(0)
+
+        if eye_wrist_distance:
+            eye_wrist_distance_list.append(eye_wrist_distance)
+        else:
+            eye_wrist_distance_list.append(0)
+
+    aver_r_elbow_angle = total_r_elbow_angle / cnt1
+    aver_l_elbow_angle = total_l_elbow_angle / cnt2
+    if is_print:
+        print('max r_elbow angle:', max_r_elbow_angle)
+        print('min r_elbow angle:', min_r_elbow_angle)
+        print('aver r_elbow angle:', aver_r_elbow_angle)
+
+        print('max l_elbow angle:', max_l_elbow_angle)
+        print('min l_elbow angle:', min_l_elbow_angle)
+        print('aver l_elbow angle:', aver_l_elbow_angle)
+
+    # elb_ang_below_105 = []
+    # for ans in elb_ang:
+    #     if ans < 105:
+    #         elb_ang_below_105.append(ans)
+    #     else:
+    #         elb_ang_below_105.append(None)
+    cnt += 1
+
+    ax1 = plt.subplot(2, 2, 1)
+    ax1.scatter(range(cnt), r_elb_ang, label='relbow angle', s=2)
+    ax1.vlines(region, 0, 180)
+    ax1.set_title('relbow_angle')
+
+    ax2 = plt.subplot(2, 2, 2)
+    ax2.scatter(range(cnt), l_elb_ang, label='lelbow angle', s=2)
+    ax2.set_title('lelbow_angle')
+
+    ax3 = plt.subplot(2, 2, 3)
+    ax3.scatter(range(cnt), neck_horizontalbar_distance, label='neck bar distance', s=2)
+    ax3.set_title('neck bar distance')
+
+    ax4 = plt.subplot(2, 2, 4)
+    ax4.scatter(range(cnt), eye_wrist_distance_list, label='eye bar distance', s=2)
+    ax4.set_title('eye bar distance')
     plt.show()
     # plt.savefig(r'E:\University\科研创新\雏燕计划-体测\push-up-side.png')

@@ -10,7 +10,7 @@ config = configparser.ConfigParser()
 config.read(CONFIG_FILE)
 
 
-def getTendency(tick, n):
+def getTendency(tick, n, var):
     """ Get the tendency of a tick
         Args: tick a list of data
               n the size of judge
@@ -24,7 +24,7 @@ def getTendency(tick, n):
             down += 1
         elif first_value < tick[i]:
             upper += 1
-    if tick_var <= 1.5:
+    if tick_var <= var:
         return None
     elif 3 <= down:
         return 'down'
@@ -66,7 +66,7 @@ def pushUpTimesCountByTendency(folder_path):
             tick.append(r_elbow_angle)
             period_cnt += 1
             if period_cnt == 5:
-                tend = getTendency(tick)
+                tend = getTendency(tick, 5, 1.5)
                 tick = []
                 if tend:
                     tendency.append(tend)

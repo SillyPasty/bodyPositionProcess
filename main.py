@@ -1,11 +1,14 @@
 import test
 import analysis
+import pullUp
 
-FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\push-up'
+PULL_UP_FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\pull-up'
+PUSH_UP_FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\push-up'
 
-times = analysis.pushUpTimesCountByTendency(FILEPATH)
+times = pullUp.pullUpAnalysis(PULL_UP_FILEPATH)
 region = []
 for time in times:
     print(time)
     region.append(time['Flag'])
-test.getPushUpInfos(FILEPATH, False, region)
+test.getPullUpInfos(PULL_UP_FILEPATH, True, region)
+test.getPushUpInfos(PUSH_UP_FILEPATH, True)
