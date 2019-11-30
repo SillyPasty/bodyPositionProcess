@@ -159,7 +159,7 @@ def getPullUpInfos(folder_path, is_print, region=[]):
         r_elbow_angle = getValue.getElbowAngle(coor, 'R')
         l_elbow_angle = getValue.getElbowAngle(coor, 'L')
         head_wrist_distance = getValue.getHeadDistance(coor)
-        eye_wrist_distance = getValue.getEyeDistance(coor)
+        eye_wrist_distance = getValue.getEyeWristDistance(coor)
 
         if r_elbow_angle:
             r_elb_ang.append(r_elbow_angle)

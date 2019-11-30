@@ -4,7 +4,7 @@ import jsonProcess as jp
 import os
 
 
-def pullUpAnalysis(folder_path):
+def pushUpAnalysis(folder_path):
     '''Open folder and process .json into a dict
        input: The file path
        ouput: The times of push-up
@@ -15,8 +15,9 @@ def pullUpAnalysis(folder_path):
     tendency = []
     result = {}
     r_elbow_angle_list = []
-    l_elbow_angle_list = []
-    eye_distance_list = []
+    r_knee_angle_list = []
+    hip_angle_list = []
+    # l_elbow_angle_list = []
     tick = []
     cnt = 0
 
@@ -26,18 +27,19 @@ def pullUpAnalysis(folder_path):
             continue
 
         r_elbow_angle = getValue.getElbowAngle(coor, 'R')
-        l_elbow_angle = getValue.getElbowAngle(coor, 'L')
-        eye_distance = getValue.getEyeWristDistance(coor)
+        r_knee_angle = getValue.getKneeAngle(coor, 'R')
+        hip_angle = getValue.getHipAngle(coor, 'R')
 
-        if l_elbow_angle:
-            l_elbow_angle_list.append(l_elbow_angle)
+        if hip_angle:
+            hip_angle_list.append(hip_angle)
 
-        if eye_distance:
-            eye_distance_list.append(eye_distance)
+        if r_knee_angle:
+            r_knee_angle_list.append(r_knee_angle)
 
         if r_elbow_angle:
             r_elbow_angle_list.append(r_elbow_angle)
             tick.append(r_elbow_angle)
+
         if len(tick) == 5:
             tend = analysis.getTendency(tick, 8)  # One tick
             tick = []
@@ -48,11 +50,12 @@ def pullUpAnalysis(folder_path):
                         if tendency[-2] == 'upper':  # a period and tendency[-3] == 'upper'
                             cnt += 1
                             result['Num'] = cnt
-                            standard = analysis.pullUpPeriodJudge(r_elbow_angle_list, l_elbow_angle_list, eye_distance_list)
-                            result['IsRElbowStandard'], result['IsLElbowStandard'], result['IsHeightStandard'] = standard
+                            standard = analysis.pushUpPeriodJudge(r_elbow_angle_list, hip_angle_list, r_knee_angle_list)
+                            result['IsRElbowStandard'], result['IsHipAngleStandard'], result['IsRKneeStandard'] = standard
                             result['Flag'] = i
-                            r_elbow_angle_list = l_elbow_angle_list = eye_distance_list = []
+                            r_elbow_angle_list = r_knee_angle_list = hip_angle_list = []
                             results.append(result)
                             result = {}
+    print(tendency)
 
     return results

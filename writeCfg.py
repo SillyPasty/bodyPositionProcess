@@ -11,4 +11,6 @@ with open(CONFIG_FILE, 'w') as cfgfile:
     conf.add_section('PushUp_Config')
     conf.set('PushUp_Config', 'ELBOW_TO_BELOW', '105')
     conf.set('PushUp_Config', 'ELBOW_TO_ABOVE', '165')
+    conf.set('PushUp_Config', 'KNEE_TO_ABOVE', '155')
+    conf.set('PushUp_Config', 'HIP_ANGLE_TO_ABOVE', '150')
     conf.write(cfgfile)

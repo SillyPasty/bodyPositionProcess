@@ -105,7 +105,7 @@ def getHeadDistance(coor):
         return None
 
 
-def getEyeDistance(coor):
+def getEyeWristDistance(coor):
     """ Get the head and wrist distance
         Args: coor: dictionary of body coordinates
         output: The distance between head and wrist
