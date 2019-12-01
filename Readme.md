@@ -28,7 +28,7 @@
 
 #### 总体结构
 
-![image-20191130163347408](E:\University\科研创新\雏燕计划-体测\算法报告\image-20191130163347408.png)
+![](https://raw.githubusercontent.com/SillyPasty/CloudImg/master/data/image-20191130163347408.png)
 
 #### 模块描述
 
@@ -121,15 +121,15 @@ bodyPosit
      - `getDistance(d1, d2, d3)`: 获得点$d_1$和过两点直线$d_2d_3$之间的距离的绝对值
     - 求值参数`(coor, side)`: coor为包含身体关键点位置的字典，side为身体方向
       - `getElbowAngle(coor, side)`: 肘关节角度
-  
+    
       - `getHipAngle(coor, side)`: 臀部角度
-  
+    
       - `getKneeAngle(coor, side)`: 膝盖角度
-  
+    
       - `getHipDistance(coor, side)`: 臀部高度（目前以手腕和大脚趾为地面判断依据）
-  
+    
       - `getHeadDistance(coor, side)`: 脖子与单杠绝对距离（目前以两手腕连线为单杠判断依据）
-  
+    
       - `getEyeWristDistance(coor, side)`:眼部与单杠距离（目前以两手腕连线为单杠判断依据）***\*此函数对特定情况进行了优化，视频水平传入时（针对x轴），若眼睛over单杠，距离为负\****
 
 ---
