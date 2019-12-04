@@ -4,7 +4,7 @@ import pullUp
 import pushUp
 
 PULL_UP_FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\pull-up'
-PUSH_UP_FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\push-up'
+PUSH_UP_FILEPATH = r'E:\Programming\Openpose\openpose\openpose\output\pushUp\45cm-4s-2ns\upside'
 
 times = pushUp.pushUpAnalysis(PUSH_UP_FILEPATH)
 # times2 = pullUp.pullUpAnalysis(PULL_UP_FILEPATH)

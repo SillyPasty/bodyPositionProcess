@@ -1,5 +1,6 @@
 import configparser
 import numpy as np
+import heapq
 
 CONFIG_FILE = r'D:\Programming\PYTHON\bodyPosit\bodyPositionDetect.cfg'
 config = configparser.ConfigParser()
@@ -22,13 +23,13 @@ def getTendency(tick, var):
         elif first_value < tick[i]:
             upper += 1
     if tick_var <= var:
-        return None
+        return 'stable'
     elif 3 <= down:
         return 'down'
     elif 3 <= upper:
         return 'upper'
     else:
-        return None
+        return 'stable'
 
 
 def pushUpPeriodJudge(r_elbow_angle_list, hip_angle_list, r_knee_angle_list):
@@ -37,7 +38,8 @@ def pushUpPeriodJudge(r_elbow_angle_list, hip_angle_list, r_knee_angle_list):
     ELBOW_TO_ABOVE = int(config.get('PushUp_Config', 'ELBOW_TO_ABOVE'))
     KNEE_TO_ABOVE = int(config.get('PushUp_Config', 'KNEE_TO_ABOVE'))
     HIP_ANGLE_TO_ABOVE = int(config.get('PushUp_Config', 'HIP_ANGLE_TO_ABOVE'))
-    if not (ELBOW_TO_ABOVE <= max(r_elbow_angle_list) and min(r_elbow_angle_list) <= ELBOW_TO_BELOW):
+    if not (ELBOW_TO_ABOVE <= max(r_elbow_angle_list)
+            and min(r_elbow_angle_list) <= ELBOW_TO_BELOW):
         is_r_elbow_standard = False
 
     if not (HIP_ANGLE_TO_ABOVE <= min(hip_angle_list)):
@@ -49,16 +51,52 @@ def pushUpPeriodJudge(r_elbow_angle_list, hip_angle_list, r_knee_angle_list):
     return (is_r_elbow_standard, is_hip_standard, is_r_knee_standard)
 
 
-def pullUpPeriodJudge(r_elbow_angle_list, l_elbow_angle_list, eye_distance_list):
+def pushUpPeriodJudgeTwoSides(r_elbow_angle_list, l_elbow_angle_list,
+                              hip_angle_list, r_knee_angle_list,
+                              hip_distance_list):
+    is_r_elbow_standard = is_hip_angle_standard = is_r_knee_standard = is_l_elbow_standard = is_hip_distance_standard = True
+    ELBOW_TO_BELOW = int(config.get('PushUp_Config', 'ELBOW_TO_BELOW'))
+    ELBOW_TO_ABOVE = int(config.get('PushUp_Config', 'ELBOW_TO_ABOVE'))
+    KNEE_TO_ABOVE = int(config.get('PushUp_Config', 'KNEE_TO_ABOVE'))
+    HIP_ANGLE_TO_ABOVE = int(config.get('PushUp_Config', 'HIP_ANGLE_TO_ABOVE'))
+    HIP_DISTANCE_TO_ABOVE = int(config.get('PushUp_Config', 'HIP_DISTANCE_TO_ABOVE'))
+    HIP_DISTANCE_TO_BELOW = int(config.get('PushUp_Config', 'HIP_DISTANCE_TO_BELOW'))
+
+    # get the second/third minus is meant to debounce!
+    if not ((ELBOW_TO_ABOVE <= sorted(r_elbow_angle_list)[-3]) and
+            (ELBOW_TO_BELOW >= sorted(r_elbow_angle_list)[3])):
+        is_r_elbow_standard = False
+
+    if not ((ELBOW_TO_ABOVE <= sorted(l_elbow_angle_list)[-3]) and
+            (ELBOW_TO_BELOW >= sorted(l_elbow_angle_list)[3])):
+        is_l_elbow_standard = False
+
+    if not (HIP_ANGLE_TO_ABOVE <= sorted(hip_angle_list)[-2]):
+        is_hip_angle_standard = False
+
+    if not (KNEE_TO_ABOVE <= sorted(r_knee_angle_list)[-2]):
+        is_r_knee_standard = False
+
+    if not ((HIP_DISTANCE_TO_ABOVE <= sorted(hip_distance_list)[-3]) and
+            (HIP_DISTANCE_TO_BELOW >= sorted(hip_distance_list)[3])):
+        is_hip_distance_standard = False
+
+    return (is_r_elbow_standard, is_l_elbow_standard, is_hip_angle_standard, is_r_knee_standard, is_hip_distance_standard)
+
+
+def pullUpPeriodJudge(r_elbow_angle_list, l_elbow_angle_list,
+                      eye_distance_list):
     is_r_elbow_standard = is_l_elbow_standard = is_height_standard = True
     ELBOW_TO_BELOW = int(config.get('PullUp_Config', 'ELBOW_TO_BELOW'))
     ELBOW_TO_ABOVE = int(config.get('PullUp_Config', 'ELBOW_TO_ABOVE'))
     # NECK_DISTANCE = int(config.get('PullUp_Config', 'NECK_DISTANCE'))
     EYE_DISTANCE = int(config.get('PullUp_Config', 'EYE_DISTANCE'))
-    if not (ELBOW_TO_ABOVE <= max(r_elbow_angle_list) and min(r_elbow_angle_list) <= ELBOW_TO_BELOW):
+    if not (ELBOW_TO_ABOVE <= max(r_elbow_angle_list)
+            and min(r_elbow_angle_list) <= ELBOW_TO_BELOW):
         is_r_elbow_standard = False
 
-    if not (ELBOW_TO_ABOVE <= max(l_elbow_angle_list) and min(l_elbow_angle_list) <= ELBOW_TO_BELOW):
+    if not (ELBOW_TO_ABOVE <= max(l_elbow_angle_list)
+            and min(l_elbow_angle_list) <= ELBOW_TO_BELOW):
         is_l_elbow_standard = False
 
     if not (min(eye_distance_list) <= EYE_DISTANCE):
