@@ -74,15 +74,13 @@ def pullUpPeriodJudge(r_elbow_angle_list, l_elbow_angle_list, eye_distance_list)
     return (is_r_elbow_standard, is_l_elbow_standard, is_height_standard)
 
 
-def sitUpPeriodJudge(r_waist_angle_list,l_waist_angle_list,r_knee_angle_list,l_knee_angle_list):
-    #r_shouldertowrist_distance_list l_shouldertowrist_distance_list
-    is_r_waist_standard = is_l_waist_standard = is_r_knee_standard = is_l_knee_standard = is_r_shouldertowrist_standard = is_l_shouldertowrist_standard= True
+def sitUpPeriodJudge(r_waist_angle_list,l_waist_angle_list,r_s_knee_angle_list,l_s_knee_angle_list,r_elbowtoneck_dist_list,l_elbowtoneck_dist_list,aver_r_elbowtoneck_dist,aver_l_elbowtoneck_dist):
+    is_r_waist_standard = is_l_waist_standard = is_r_s_knee_standard = is_l_s_knee_standard = True
+    is_r_elbowtoneck_standard = is_l_elbowtoneck_standard = True
     WAIST_TO_BELOW = int(config.get('SitUp_Config', 'WAIST_TO_BELOW'))
     WAIST_TO_ABOVE = int(config.get('SitUp_Config', 'WAIST_TO_ABOVE'))
     KNEE_TO_BELOW = int(config.get('SitUp_config','KNEE_TO_BELOW'))
     KNEE_TO_ABOVE = int(config.get('SitUp_config','KNEE_TO_ABOVE'))
-    #STW_TO_BELOW = int(config.get('SitUp_config','STW_TO_BELOW'))
-    #STW_TO_ABOVE = int(config.get('SitUp_config','STW_TO_ABOVE'))
 
     if not (WAIST_TO_ABOVE <= max(r_waist_angle_list) and min(r_waist_angle_list) <= WAIST_TO_BELOW):
         is_r_waist_standard = False
@@ -90,17 +88,27 @@ def sitUpPeriodJudge(r_waist_angle_list,l_waist_angle_list,r_knee_angle_list,l_k
     if not (WAIST_TO_ABOVE <= max(l_waist_angle_list) and min(l_waist_angle_list) <= WAIST_TO_BELOW):
         is_l_waist_standard = False
 
-    if not (KNEE_TO_ABOVE <= max(r_knee_angle_list) and min(r_knee_angle_list) <= KNEE_TO_BELOW):
-        is_r_knee_standard = False
+    if not (KNEE_TO_ABOVE <= max(r_s_knee_angle_list) and min(r_s_knee_angle_list) <= KNEE_TO_BELOW):
+        is_r_s_knee_standard = False
 
-    if not (KNEE_TO_ABOVE <= max(l_knee_angle_list) and min(l_knee_angle_list) <= KNEE_TO_BELOW):
-        is_l_knee_standard = False
+    if not (KNEE_TO_ABOVE <= max(l_s_knee_angle_list) and min(l_s_knee_angle_list) <= KNEE_TO_BELOW):
+        is_l_s_knee_standard = False
 
-    #if not (STW_TO_ABOVE <= max(r_shouldertowrist_distance_list) and min(r_shouldertowrist_distance_list) <= STW_TO_BELOW):
-        #is_r_shouldertowrist_standard =False
+    for r_dist in r_elbowtoneck_dist_list:
+        var_r_dist = (r_dist - aver_r_elbowtoneck_dist)**2 #求方差
+        cnt += 1
+        return cnt,var_r_dist
+    if var_r_dist / (cnt-1) >= 1:
+        is_r_elbowtoneck_standard = False
+        print('right_arm is non-standard')
 
-    #if not (STW_TO_ABOVE <= max(l_shouldertowrist_distance_list) and min(l_shouldertowrist_distance_list) <= STW_TO_BELOW):
-        #is_l_shouldertowrist_standard = False
+    for l_dist in l_elbowtoneck_dist_list:
+        var_l_dist = (l_dist - aver_l_elbowtoneck_dist)**2 #求方差
+        cnt += 1
+        return cnt,var_l_dist
+    if var_l_dist / (cnt-1) >= 1:
+        is_l_elbowtoneck_standard = False
+        print('left_arm is non-standard')
 
-    return (is_r_waist_standard,is_l_waist_standard,is_r_knee_standard,is_l_knee_standard,is_r_shouldertowrist_standard,is_l_shouldertowrist_standard)
+    return (is_r_waist_standard,is_l_waist_standard,is_r_s_knee_standard,is_l_s_knee_standard,is_l_elbowtoneck_standard,is_r_elbowtoneck_standard)
 
