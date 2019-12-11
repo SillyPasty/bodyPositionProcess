@@ -26,6 +26,15 @@ def getDistance(d1, d2, d3):
     return distance
 
 
+def getPointDistance(d1,d2):
+    """Get the distance between dot d1 and d2
+    input: tuple or list of the two coordinate
+    output： the distance between dot d1 and d2
+    """
+    x1,y1,x2,y2 = d1[0],d1[1],d2[0],d2[1]
+    distance = math.sqrt((x1-x2)**2+(y1-y2)**2)
+    return distance
+
 def getElbowAngle(coor, side=''):
     """ Get the elbow angle
         Args: coor: dictionary of body coordinates
@@ -138,21 +147,16 @@ def getWaistAngle(coor,side=''):
         return None
 
 
-def getShoulderToWristDistance(coor, side=''):#抱胸式仰卧起坐肩膀到手臂距离，大致固定没有变化趋势
+def getElbowToNeckDistance(coor,side=''):#仰卧起坐手肘到脖子距离，大致固定没有变化趋势
     """ Get the distance between Shoulder and wrist
         Args: coor: dictionary of body coordinates
               side: L/R
-        output: The distance between Shoulder and wrist
+        output: The distance between Elbow and Neck
     """
-    wrist = coor[side + 'Wrist']
+    neck = coor['Neck']
     elbow = coor[side + 'Elbow']
-    shoulder = coor[side + 'Shoulder']
-    dist = getDistance(shoulder, wrist, elbow)
-    if shoulder[2] != 0 and elbow[2] != 0 and wrist[2] != 0:
-        if shoulder[0] < wrist[0]:
-            return -dist
-        else:
-            return dist
+    if elbow[2] != 0 and neck[2] != 0:
+        return getPointDistance(neck, elbow)
     else:
         return None
 
