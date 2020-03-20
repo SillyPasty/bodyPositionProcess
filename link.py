@@ -7,8 +7,7 @@ def linkSqlite(cursor):
     sql_del = "DROP TABLE IF EXISTS stu;"
     cursor.execute(sql_del)
     #创建一个user表
-    cursor.execute("CREATE TABLE stu(Flag INTEGER,Stu_id INTEGER,Type TEXT,Num INTEGER,Mark INTEGER,Time REAL,Reason TEXT)")
-    #Add(cursor,flag, stu_id, type, mark, num, time, reason)
+    cursor.execute("CREATE TABLE stu(Flag INTEGER,Stu_id INTEGER,Type TEXT,Num INTEGER,Mark INTEGER,Time REAL,Waist_angle INTERGER, Arm_position INTEGER, Elbow_angle INTEGER, Chin_height INTEGER)")
 
 
 """
@@ -31,7 +30,7 @@ def linkSqlite(cursor):
         Reason varchar(25) NULL,
     }
     '''
-    cursor.execute("CREATE TABLE stu(Stu_id int,Type varchar(8),Num int,Mark int,Time double,Reason varchar(25))")
+    cursor.execute("CREATE TABLE stu(Stu_id int,Type varchar(8),Num int,Mark int,Time double,Waist_angle int, Arm_position int, Elbow_angle int, Chin_height int)")
 """
 #一班 王一 甲乙丙 123
 #二班 丁二  丁戊 5
