@@ -6,7 +6,7 @@ def Add(cursor, flag, stu_id, type, mark,
     while flag == 1:
         sql = "INSERT INTO stu(Flag, Stu_id, Type, Num, \
             Mark, Time, Waist_angle, Arm_position, Elbow_angle, \
-            Chin_height) VALUES (?,?,?,?,?,?,?,?,?,?)"
+            Chin_height) VALUES (%d,%d,%s,%d,%d,%s,%d,%d,%d,%d)"
         para = (flag, stu_id, type, num, mark, time,
                 waist_angle, arm_position, elbow_angle, chin_height)
         cursor.execute(sql, para)
