@@ -20,6 +20,7 @@ QT_CHARTS_USE_NAMESPACE
 int i=1;
 int num_q=0;
 int num_u=0;
+QString s_id;
 QString stu_name;
 QString stu_class;
 int waist=0;
@@ -27,6 +28,8 @@ int arm=0;
 int elbow=0;
 int chin=0;
 int time_per;
+QString yes;
+QString no;
 
 Video::Video(QWidget *parent) :
     QWidget(parent),
@@ -65,13 +68,13 @@ void Video::now_info()
    query.exec(QString("select*from Queue where id=%1").arg(i));
    query.next();
    int id=query.value(0).toInt();//id
-   if(id=i)//读到数据
+   if(id==i)//读到数据
    {
        //是否开始读下一个人的信息
        int flag=query.value(1).toInt();
        if(flag==1)
        {
-           QString s_id=query.value(2).toString;
+           s_id=query.value(2).toString();
            ui->textBrowser_3->setText(s_id);//显示学号
            QSqlQuery query2;
            query2.exec(QString("select*from student where id='%1'").arg(s_id));
@@ -89,7 +92,6 @@ void Video::now_info()
            QDateTime dateTime0=query.value(6).toDateTime();
            QString dateTime_str0 = dateTime0.toString("yyyy-MM-dd hh:mm:ss:zzz");
            time_per=QDateTime::fromString(dateTime_str0, "yyyy-MM-dd hh:mm:ss:zzz").toTime_t();
-           i=i+1;
        }
        else
        {
@@ -98,21 +100,21 @@ void Video::now_info()
            if(stand==1)
            {
                num_q=num_q+1;
-               QString yes=QString::number(num_q,10);
+               yes=QString::number(num_q,10);
                ui->textBrowser_7->setText(yes);//显示合格数目
 
            }
-           else if(stand==0)
+           else if(stand==2)
            {
                num_u=num_u+1;
-               QString no=QString::number(num_u,10);
+               no=QString::number(num_u,10);
                ui->textBrowser_6->setText(no);//显示不合格数目
            }
 
            //判断姿势
            int w_s=query.value(7).toInt();
            waist=waist+w_s;
-           QString waist_t=QString::number(wasit,10);
+           QString waist_t=QString::number(waist,10);
            int a_s=query.value(8).toInt();
            arm=arm+a_s;
            QString arm_t=QString::number(arm,10);
@@ -161,10 +163,24 @@ void Video::now_info()
                 arm=0;
                 elbow=0;
                 chin=0;
+                QSqlQuery query4;
+                    query4.exec(QString("update Exam1%1Class%2 set qualified=%3where number=%4")
+                                .arg(type)
+                                .arg(stu_class)
+                                .arg(yes)
+                                .arg(s_id));
+                    QSqlQuery query5;
+                        query5.exec(QString("update Exam1%1Class%2 set unqualified=%3where number=%4")
+                                    .arg(type)
+                                    .arg(stu_class)
+                                    .arg(no)
+                                    .arg(s_id));
+                 QString query6;
+                 query6.exec("delete Queue")
            }
 
        }//flag=0
-       i++;
+       i=i+1;
    }//id=i
    //画速率变化图
    QGraphicsScene *scene = new QGraphicsScene;
@@ -179,7 +195,7 @@ for(int a=0;a<i;a++)
    QSqlQuery query0;
        query0.exec(QString("select *from speed where id=%1").arg(a));
        query0.next();
-       int spped=query0.value(1).toInt();
+       int speed=query0.value(1).toInt();
    QPoint point=QPoint(a,speed);
    lineseries->append(point);
 }
@@ -188,11 +204,11 @@ QChart *lineChart = new QChart();
    lineChart->addSeries(lineseries);  // 将 series 添加至图表中
    lineChart->createDefaultAxes();  // 基于已添加到图表的 series 来创建轴
    lineChart->setTitle("(横轴——完成个数/纵轴——平均速率)");//图表显示的标题
-   lineChart->axisX()->setRange(0,a);
+   lineChart->axisX()->setRange(0,i);
    lineChart->axisY()->setRange(0,10);
    lineChart->setGeometry(5, 5, 400, 260);
    scene->addItem(lineChart);
-   ui->graphicsView->setScene(10);
+   ui->graphicsView->setScene(scene);
    ui->graphicsView->show();
 
 
