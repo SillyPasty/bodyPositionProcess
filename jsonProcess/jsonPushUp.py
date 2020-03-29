@@ -16,8 +16,7 @@ class JsonPushUp(TJsonProcess):
             delta = curTime - startTime
             if delta.seconds != length:
                 length = delta.seconds
+                self.hisInfo.add(id=length, flag=1, stuno=1, type='situp', mark=1,
+                                num=1, time=datetime.now(), waist=1, arm=1,
+                                elbow=1, chin=1, flag2=0)
                 self.signal_update_time.emit(period - length)
-
-
-
-        
