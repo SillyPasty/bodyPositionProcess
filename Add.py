@@ -1,13 +1,13 @@
 
 
-def Add(cursor, flag, stu_id, type, mark,
-        num, time, waist_angle, arm_position,
-        elbow_angle, chin_height):
+def Add(cursor, id, flag, stuno, type, mark,
+        num, time, waist, arm,
+        elbow, chin, flag2):
     while flag == 1:
-        sql = "INSERT INTO stu(Flag, Stu_id, Type, Num, \
-            Mark, Time, Waist_angle, Arm_position, Elbow_angle, \
-            Chin_height) VALUES (%d,%d,%s,%d,%d,%s,%d,%d,%d,%d)"
-        para = (flag, stu_id, type, num, mark, time,
-                waist_angle, arm_position, elbow_angle, chin_height)
+        sql = "INSERT INTO Queue(id, flag, stuno, type, num, \
+            mark, time, waist, arm, elbow, \
+            chin, flag2) VALUES (%d,%d,%d,%s,%d,%d,%s,%d,%d,%d,%d,%d)"
+        para = (id, flag, stuno, type, num, mark, time,
+                waist, arm, elbow, chin, flag2)
         cursor.execute(sql, para)
         break
